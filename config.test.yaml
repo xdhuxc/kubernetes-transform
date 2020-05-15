@@ -1,0 +1,44 @@
+address: 8080
+env: "test"
+app: "kubernetes-transform"
+debug: true
+
+mode: "save" # 可以为 rst，save，restore 三种模式
+policy: "skip" # 可以为 skip，merge 和 update
+
+namespace:
+  name: "namespace"
+  action: "include" # 或 exclude
+  namespaces: ["kube-admin", "kube-system", "kube-public"]
+
+resource:
+  name: "resource"
+  action: "include"
+  resources: ["Deployment", "Service"]
+  kinds: ["Deployment", "Service", "Ingress", "ConfigMap", "CronJob", "Secret", "Namespace"] # 保存当前已写代码的资源
+
+source:
+  name: "xdhuxc-k8s-test"
+  address: "https://127.0.0.1:16443"
+  token: "source-token"
+  cloud: "aws"
+  region: ""
+
+target:
+  name: "xdhuxc-k8s-dev"
+  address: "https://127.0.0.1:16443"
+  token: "target-token"
+  cloud: "huawei"
+  region: ""
+
+database:
+  host: "127.0.0.1:3306"
+  user: "root"
+  password: "Xdhuxc@20-02"
+  name: "xdhuxc"
+  log: true
+  maxIdleConns: 10
+  maxOpenConns: 100
+
+
+
