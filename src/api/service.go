@@ -1,10 +1,12 @@
 package api
 
 import (
+	"github.com/xdhuxc/kubernetes-transform/src/model"
+	"net/http"
+
 	"github.com/emicklei/go-restful"
 	restfulspec "github.com/emicklei/go-restful-openapi"
 	"github.com/xdhuxc/kubernetes-transform/src/pkg"
-	"net/http"
 )
 
 type ServiceController struct {
@@ -46,8 +48,15 @@ func (sc *ServiceController) Save(req *restful.Request, resp *restful.Response) 
 }
 
 func (sc *ServiceController) Transform(req *restful.Request, resp *restful.Response) {
+	var tr []model.TransformRequest
 
-	sc.bs.TransformService.Transform()
+	err := req.ReadEntity(&tr)
+	if err != nil {
+		pkg.WriteResponse(resp, pkg.TransformRequestError, err)
+		return
+	}
+
+	sc.bs.TransformService.Transform(tr)
 
 }
 

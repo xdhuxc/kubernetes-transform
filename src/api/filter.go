@@ -2,6 +2,7 @@ package api
 
 import (
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/emicklei/go-restful"
@@ -78,6 +79,28 @@ func (bc *BaseController) metrics(req *restful.Request, resp *restful.Response, 
 		"code":     strconv.Itoa(resp.StatusCode()),
 		"env":      config.GetConfig().Env,
 	}).Observe(duration)
+
+	chain.ProcessFilter(req, resp)
+}
+
+func (bc *BaseController) check(req *restful.Request, resp *restful.Response, chain *restful.FilterChain) {
+	if strings.Contains(req.Request.URL.Path, pkg.RequestTypeTransform) {
+		err := bc.bs.TransformService.Check()
+		pkg.WriteResponse(resp, pkg.TransformServiceCheckError, err)
+		return
+	}
+
+	if strings.Contains(req.Request.URL.Path, pkg.RequestTypeRestore) {
+		err := bc.bs.RestoreService.Check()
+		pkg.WriteResponse(resp, pkg.RestoreServiceCheckError, err)
+		return
+	}
+
+	if strings.Contains(req.Request.URL.Path, pkg.RequestTypeSave) {
+		err := bc.bs.SaveService.Check()
+		pkg.WriteResponse(resp, pkg.SaveServiceCheckError, err)
+		return
+	}
 
 	chain.ProcessFilter(req, resp)
 }

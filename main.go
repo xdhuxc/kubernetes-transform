@@ -3,8 +3,13 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
 	"os"
+	"os/signal"
+	"syscall"
+	"time"
+
+	_ "go.uber.org/automaxprocs"
+	"k8s.io/klog/v2"
 
 	"github.com/xdhuxc/kubernetes-transform/src/api"
 	"github.com/xdhuxc/kubernetes-transform/src/config"
@@ -16,12 +21,29 @@ func main() {
 	flag.Parse()
 	err := config.InitConfig(*cf)
 	if err != nil {
-		_ = fmt.Errorf("init config error: %v", err)
-		os.Exit(1)
+		klog.Fatalln(err)
 	}
 
-	app := api.NewRouter()
+	channel := make(chan os.Signal)
+	signal.Notify(channel, syscall.SIGTERM)
+	go func() {
+		for s := range channel {
+			switch s {
+			case syscall.SIGTERM:
+				fmt.Println("Start to exit, sleep 5s")
+				time.Sleep(5 * time.Second)
+				os.Exit(0)
+			default:
+				fmt.Println("Receive other signal")
+			}
+		}
+	}()
+
+	app, err := api.NewRouter()
+	if err != nil {
+		klog.Fatalln(err)
+	}
 	if err := app.Run(); err != nil {
-		log.Fatal(err)
+		klog.Fatalln(err)
 	}
 }

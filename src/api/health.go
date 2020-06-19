@@ -9,13 +9,13 @@ import (
 	"github.com/xdhuxc/kubernetes-transform/src/pkg"
 )
 
-type healthCheckController struct {
+type healthController struct {
 	*BaseController
 }
 
-func newHealthCheckController(bc *BaseController) *healthCheckController {
-	tags := []string{"hi"}
-	hcc := &healthCheckController{bc}
+func newHealthCheckController(bc *BaseController) *healthController {
+	tags := []string{"health"}
+	hcc := &healthController{bc}
 
 	hcc.ws.Route(hcc.ws.GET("/health").
 		To(hcc.Get).
@@ -27,10 +27,10 @@ func newHealthCheckController(bc *BaseController) *healthCheckController {
 	return hcc
 }
 
-func (hcc *healthCheckController) Get(req *restful.Request, resp *restful.Response) {
-	result, err := hcc.bs.HealthCheckService.Get()
+func (hcc *healthController) Get(req *restful.Request, resp *restful.Response) {
+	result, err := hcc.bs.HealthService.Get()
 	if err != nil {
-		pkg.WriteResponse(resp, pkg.HiError, err)
+		pkg.WriteResponse(resp, pkg.HealthError, err)
 		return
 	}
 

@@ -1,30 +1,45 @@
 package pkg
 
 var (
-	DefaultToken = "xdhuxc"
+	DefaultToken string = "xdhuxc"
 
-	KubernetesResourceActionInclude = "include"
-	KubernetesResourceActionExclude = "exclude"
+	// kubernetes 资源操作
+	KubernetesResourceActionInclude string = "include"
+	KubernetesResourceActionExclude string = "exclude"
+
+	// 同名资源创建策略
+	KubernetesResourcePolicySkip  string = "skip"
+	KubernetesResourcePolicyMerge string = "merge"
+
+	// Kubernetes 资源标签操作类型
+	KubernetesResourceLabelOperationUpdate string = "update"
+	KubernetesResourceLabelOperationDelete string = "delete"
+	KubernetesResourceLabelOperationMerge  string = "merge"
+
+	// 请求类型
+	RequestTypeTransform string = "transform"
+	RequestTypeSave      string = "save"
+	RequestTypeRestore   string = "restore"
 
 	// kubernetes 资源类型和 API 版本
-	KubernetesResourceDeployment           = "Deployment"
-	KubernetesResourceDeploymentAPIVersion = "apps/v1"
+	KubernetesResourceDeployment           string = "Deployment"
+	KubernetesResourceDeploymentAPIVersion string = "apps/v1"
 
-	KubernetesResourceService           = "Service"
-	KubernetesResourceServiceAPIVersion = "v1"
+	KubernetesResourceService           string = "Service"
+	KubernetesResourceServiceAPIVersion string = "v1"
 
-	KubernetesResourceIngress           = "Ingress"
-	KubernetesResourceIngressAPIVersion = "v1beta1"
+	KubernetesResourceIngress           string = "Ingress"
+	KubernetesResourceIngressAPIVersion string = "v1beta1"
 
-	KubernetesResourceConfigMap           = "ConfigMap"
-	KubernetesResourceConfigMapAPIVersion = "v1"
+	KubernetesResourceConfigMap           string = "ConfigMap"
+	KubernetesResourceConfigMapAPIVersion string = "v1"
 
-	KubernetesResourceCronJob           = "CronJob"
-	KubernetesResourceCronJobAPIVersion = "batch/v1beta1"
+	KubernetesResourceCronJob           string = "CronJob"
+	KubernetesResourceCronJobAPIVersion string = "batch/v1beta1"
 
-	KubernetesResourceSecret           = "Secret"
-	KubernetesResourceSecretAPIVersion = "v1"
+	KubernetesResourceSecret           string = "Secret"
+	KubernetesResourceSecretAPIVersion string = "v1"
 
-	KubernetesResourceNamespace           = "Namespace"
-	KubernetesResourceNamespaceAPIVersion = "v1"
+	KubernetesResourceNamespace           string = "Namespace"
+	KubernetesResourceNamespaceAPIVersion string = "v1"
 )

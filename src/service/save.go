@@ -38,6 +38,17 @@ func newSaveService(cnf config.Config, skc *kubernetes.Clientset, db *gorm.DB) *
 	}
 }
 
+func (ss *saveService) Check() error {
+	if ss.skc == nil {
+		return fmt.Errorf("源集群 Kubernetes 客户端未初始化。")
+	}
+	if ss.db == nil {
+		return fmt.Errorf("数据库客户端未初始化。")
+	}
+
+	return nil
+}
+
 func (ss *saveService) Save() error {
 	_, nss, err := Namespaces(ss.skc)
 	if err != nil {

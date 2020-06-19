@@ -65,13 +65,14 @@ type ResponseResult struct {
 }
 
 const (
-	AuthFailed string = "401-10000"
+	TransformServiceCheckError string = "200-10001"
+	TransformRequestError      string = "200-10002"
 
-	InvalidParams    string = "400-10001"
-	InvalidUser      string = "400-10002"
-	InvalidOperation string = "400-10003"
+	RestoreServiceCheckError string = "200-20001"
 
-	HiError string = "400-20000"
+	SaveServiceCheckError string = "200-30001"
+
+	HealthError string = "200-40001"
 )
 
 func WriteResponse(resp *restful.Response, code string, result interface{}) {

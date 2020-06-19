@@ -2,8 +2,9 @@ package util
 
 import (
 	"encoding/json"
-	"github.com/ghodss/yaml"
 	"strconv"
+
+	"github.com/ghodss/yaml"
 )
 
 func Marshal(v interface{}) (string, string, error) {

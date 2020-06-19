@@ -22,8 +22,8 @@
 可以通过如下数据格式指定排除的命名空间或资源：
 ```markdown
 {
-    "name": "namespace"
-    "action": "include" # or exclude
+    "name": "namespace",
+    "action": "include", # or exclude
     "namespaces": ["kube-admin", "kube-system", "kube-public"]
 }
 ```
@@ -31,7 +31,7 @@
 ```markdown
 {
     "name": "resource",
-    "action": "exclude" # or exclude
+    "action": "exclude", # or exclude
     "resources": ["Deployment", "Service"]
 }
 ```
@@ -43,7 +43,21 @@
 
 注意，一次请求中，只能指定 inclusions 或 exclusions
 
-#### 标签的删除，替换和合并
+
+### 功能
+kubernetes-transform 的功能：
+* 将源集群中的资源创建到目标集群中，可以指定策略处理同名资源
+* 将源集群中的资源数据保存到数据库中
+* 将数据库中的集群资源创建到目标集群中，可以指定策略处理同名资源
+* 支持原生 Kubernetes 资源
+* 支持 API 调用
+* 可以指定同名资源创建策略，包括：skip，merge，update
+* 支持命名空间排除和资源排除
+* 支持标签排除，替换和合并
+* 支持 AWS EKS 和 华为云 CCE
+* 支持配置文件配置和接口调整配置
+
+### 标签的删除，替换和合并
 
 删除标签的写法如下：
 ```markdown
@@ -81,18 +95,33 @@
 ```
 目标资源中将会带有这些新标签，如果含有同名标签，则会覆盖旧值。
 
-### 功能
-kubernetes-transform 的功能：
-* 将源集群中的资源创建到目标集群中，可以指定策略处理同名资源
-* 将源集群中的资源数据保存到数据库中
-* 将数据库中的集群资源创建到目标集群中，可以指定策略处理同名资源
-* 支持原生 Kubernetes 资源
-* 支持 API 调用
-* 可以指定同名资源创建策略，包括：skip，merge，update
-* 支持命名空间排除和资源排除
-* 支持标签排除，替换和合并
-* 支持 AWS EKS 和 华为云 CCE
-* 支持配置文件配置和接口调整配置
+请求的数据格式为：
+```markdown
+[
+    {
+        "action": "update",
+        "labels" : {
+            "env": "prod",
+            "group": "ADS"
+        }
+    },
+    {
+        "action": "delete",
+        "labels" : {
+            "env": "prod",
+            "group": "ADS"
+        }
+    },
+    {
+        "action": "merge",
+        "labels" : {
+            "env": "prod",
+            "group": "ADS"
+        }
+    }
+]
+```
+
 
 ### 注意事项
 
@@ -124,3 +153,19 @@ kubernetes-transform 的功能：
 ### 注意事项
 
 本项目尚未全部完成
+
+
+### git 操作
+
+1、增加远程仓库
+```markdown
+git remote add shareit git@gitlab.ushareit.me:sgt/devops/kubernetes-transform.git
+```
+
+2、推送代码到远程仓库
+```markdown
+git push -u shareit master
+```
+
+
+

@@ -1,5 +1,5 @@
 package model
 
-type HealthCheck struct {
+type Health struct {
 	Message string
 }

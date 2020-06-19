@@ -27,7 +27,7 @@ type transformService struct {
 	cnf config.Config
 }
 
-func newTransformService(cnf config.Config, skc, tkc *kubernetes.Clientset) *transformService {
+func newTransformService(cnf config.Config, skc *kubernetes.Clientset, tkc *kubernetes.Clientset) *transformService {
 	return &transformService{
 		sc:  cnf.Source,
 		tc:  cnf.Target,
@@ -37,7 +37,18 @@ func newTransformService(cnf config.Config, skc, tkc *kubernetes.Clientset) *tra
 	}
 }
 
-func (ts *transformService) Transform() error {
+func (ts *transformService) Check() error {
+	if ts.skc == nil {
+		return fmt.Errorf("源集群 Kubernetes 客户端未初始化。")
+	}
+	if ts.tkc == nil {
+		return fmt.Errorf("目标集群 Kubernetes 客户端未初始化。")
+	}
+
+	return nil
+}
+
+func (ts *transformService) Transform(tr *model.TransformRequest) error {
 	_, nss, err := Namespaces(ts.skc)
 	if err != nil {
 		return err
@@ -74,7 +85,7 @@ func (ts *transformService) Transform() error {
 				return fmt.Errorf("the action of resource request is invalid")
 			}
 		} else {
-			return fmt.Errorf("there is no intersection between the requested namespaces and the actual namespaces")
+			return fmt.Errorf("请求的命名空间和集群实际具有的命名空间之间没有交集。")
 		}
 	} else if ts.cnf.Namespace.Action == pkg.KubernetesResourceActionExclude {
 		// Namespace Inclusion Set
@@ -117,6 +128,7 @@ func (ts *transformService) Deployment(namespace string) error {
 	token := pkg.DefaultToken
 	var options metav1.ListOptions
 	getOptions := metav1.GetOptions{}
+
 	for {
 		if token != pkg.DefaultToken {
 			options = metav1.ListOptions{

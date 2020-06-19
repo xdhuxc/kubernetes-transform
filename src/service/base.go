@@ -3,6 +3,7 @@ package service
 import (
 	"github.com/asaskevich/govalidator"
 	"github.com/jinzhu/gorm"
+	"github.com/xdhuxc/kubernetes-transform/src/model"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
@@ -13,10 +14,10 @@ import (
 )
 
 type BaseService struct {
-	HealthCheckService *healthCheckService
-	TransformService   *transformService
-	SaveService        *saveService
-	RestoreService     *restoreService
+	HealthService    *healthService
+	TransformService *transformService
+	SaveService      *saveService
+	RestoreService   *restoreService
 }
 
 func NewBaseService(cnf config.Config, db *gorm.DB) (*BaseService, error) {
@@ -30,10 +31,10 @@ func NewBaseService(cnf config.Config, db *gorm.DB) (*BaseService, error) {
 	}
 
 	return &BaseService{
-		HealthCheckService: newHealthCheckService(db),
-		TransformService:   newTransformService(cnf, skc, tkc),
-		SaveService:        newSaveService(cnf, skc, db),
-		RestoreService:     newRestoreService(cnf, tkc, db),
+		HealthService:    newHealthService(db),
+		TransformService: newTransformService(cnf, skc, tkc),
+		SaveService:      newSaveService(cnf, skc, db),
+		RestoreService:   newRestoreService(cnf, tkc, db),
 	}, nil
 }
 
@@ -72,4 +73,32 @@ func Namespaces(skc *kubernetes.Clientset) ([]v1.Namespace, []string, error) {
 	}
 
 	return namespaces, nss, nil
+}
+
+func generateLabels(labels map[string]string, las []model.LabelsAction) map[string]string {
+	for _, item := range las {
+		if item.Action == pkg.KubernetesResourceLabelOperationUpdate {
+			for k, v := range item.Labels {
+				_, ok := labels[k]
+				if !ok {
+					continue
+				}
+				labels[k] = v
+			}
+		}
+
+		if item.Action == pkg.KubernetesResourceLabelOperationMerge {
+			for k, v := range item.Labels {
+				labels[k] = v
+			}
+		}
+
+		if item.Action == pkg.KubernetesResourceLabelOperationDelete {
+			for k := range item.Labels {
+				delete(labels, k)
+			}
+		}
+	}
+
+	return labels
 }

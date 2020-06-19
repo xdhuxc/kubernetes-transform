@@ -6,6 +6,8 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 
 	clientcmdapi "k8s.io/client-go/tools/clientcmd/api"
+
+	"github.com/xdhuxc/kubernetes-transform/src/model"
 )
 
 func NewConfig(clusterName, apiserverHost, apiserverToken string) (*rest.Config, error) {
@@ -25,6 +27,20 @@ func NewConfig(clusterName, apiserverHost, apiserverToken string) (*rest.Config,
 
 func NewKubernetesClusterClient(name string, address string, token string) (*kubernetes.Clientset, error) {
 	cfg, err := NewConfig(name, address, token)
+	if err != nil {
+		return nil, err
+	}
+
+	clientset, err := kubernetes.NewForConfig(cfg)
+	if err != nil {
+		return nil, err
+	}
+
+	return clientset, nil
+}
+
+func NewKubernetesClientFromCluster(cluster model.Cluster) (*kubernetes.Clientset, error) {
+	cfg, err := NewConfig(cluster.Name, cluster.Address, cluster.Token)
 	if err != nil {
 		return nil, err
 	}

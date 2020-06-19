@@ -37,6 +37,17 @@ func newRestoreService(cnf config.Config, tkc *kubernetes.Clientset, db *gorm.DB
 	}
 }
 
+func (rs *restoreService) Check() error {
+	if rs.tkc == nil {
+		return fmt.Errorf("目标集群 Kubernetes 客户端未初始化。")
+	}
+	if rs.db == nil {
+		return fmt.Errorf("数据库客户端未初始化。")
+	}
+
+	return nil
+}
+
 func (rs *restoreService) Restore() error {
 	var resources []model.Resource
 	if err := rs.db.Model(&model.Resource{}).Find(&resources).Error; err != nil {

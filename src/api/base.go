@@ -12,34 +12,40 @@ import (
 )
 
 type BaseController struct {
-	db   *gorm.DB
-	bs   *service.BaseService
-	ws   *restful.WebService
-	sign chan byte
+	db     *gorm.DB
+	bs     *service.BaseService
+	ws     *restful.WebService
+	config config.Config
 }
 
-func NewBaseController(db *gorm.DB) *BaseController {
+func NewBaseController(db *gorm.DB) (*BaseController, error) {
 	ws := new(restful.WebService)
 	ws.Path("/kubernetes/api/v1").
 		Consumes(restful.MIME_XML, restful.MIME_JSON).
 		Produces(restful.MIME_JSON, restful.MIME_XML)
 
+	c := config.GetConfig()
+	bs, err := service.NewBaseService(c, db)
+	if err != nil {
+		return nil, err
+	}
+
 	baseController := &BaseController{
-		db:   db,
-		bs:   service.NewBaseService(config.GetConfig(), db),
-		ws:   ws,
-		sign: make(chan byte, 5),
+		db:     db,
+		bs:     bs,
+		ws:     ws,
+		config: c,
 	}
 
 	newHealthCheckController(baseController)
 	newServiceController(baseController)
 
-	return baseController
+	return baseController, nil
 }
 
 func (bc *BaseController) extract(req *restful.Request) (string, []int, string, error) {
 	if config.GetConfig().Debug {
-		return "debuger", []int{17}, "admin", nil
+		return "debuger", []int{0}, "admin", nil
 	}
 
 	user := req.HeaderParameter("x-xdhuxc-user")

@@ -16,7 +16,9 @@ require (
 	github.com/imdario/mergo v0.3.9 // indirect
 	github.com/jinzhu/gorm v1.9.12
 	github.com/prometheus/client_golang v1.6.0
+	github.com/sirupsen/logrus v1.4.2
 	github.com/stretchr/testify v1.4.0
+	go.uber.org/automaxprocs v1.3.0
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d // indirect
 	golang.org/x/time v0.0.0-20200416051211-89c76fbcd5d1 // indirect
 	gopkg.in/yaml.v2 v2.2.8

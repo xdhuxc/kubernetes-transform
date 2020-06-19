@@ -3,7 +3,7 @@ env: "prod"
 app: "kubernetes-transform"
 debug: true
 
-mode: "save" # 可以为 rst，save，restore 三种模式
+mode: "save" # 可以为 transform，save，restore 三种模式
 policy: "skip" # 可以为 skip，merge 和 update
 
 namespace:
